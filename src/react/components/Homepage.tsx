@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2)
   },
   title: {
-    flexGrow: 1
+    flexGrow: 1,
+    fontSize: '16px'
   },
   icons: {
     color: 'white'
@@ -94,7 +95,7 @@ const Homepage: React.FC = () => {
     <div>
       <div className={classes.root}>
         <AppBar position="static" className={classes.appBar}>
-          <Toolbar>
+          <Toolbar variant="dense">
             <Typography variant="h6" className={classes.title}>
               Zoom Meeting Manager
             </Typography>
