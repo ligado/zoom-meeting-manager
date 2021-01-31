@@ -20,6 +20,12 @@ export const getOs = () => {
   }
 }
 
+export const exitApp = () => {
+  return async (_: Dispatch<Action>) => {
+    ipcRenderer.send(channels.EXIT_APP)
+  }
+}
+
 export const fetchMeetings = () => {
   return async (dispatch: Dispatch<Action>) => {
     ipcRenderer.send(channels.FETCH_MEETINGS)

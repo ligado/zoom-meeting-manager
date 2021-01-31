@@ -30,9 +30,26 @@ class ConfigService {
    */
   appConfig: Configuration
 
+  private getAppDataPath(): string {
+    switch (process.platform) {
+      case 'darwin':
+        return path.join(process.env.HOME, 'Library', 'Application Support', 'Zoom Meeting Manager')
+      case 'win32':
+        return path.join(process.env.APPDATA, 'Zoom Meeting Manager')
+      case 'linux':
+        return path.join(process.env.HOME, '.Zoom Meeting Manager')
+    }
+    return '.'
+  }
+
   private constructor() {
     // Derive the path to our configuration file
-    this.homeDir = process.cwd()
+    // this.homeDir = process.cwd()
+    this.homeDir = this.getAppDataPath()
+    if (!fs.existsSync(this.homeDir)) {
+      fs.mkdirSync(this.homeDir)
+    }
+
     this.appConfigPath = path.join(this.homeDir, 'config.json')
 
     if (!fs.existsSync(this.appConfigPath)) {

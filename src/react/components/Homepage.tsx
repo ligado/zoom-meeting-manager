@@ -9,6 +9,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import SettingsIcon from '@material-ui/icons/Settings'
 import AddIcon from '@material-ui/icons/Add'
+import ClearIcon from '@material-ui/icons/Clear'
 import MeetingCard from './MeetingCard'
 import { Meeting } from '../../electron/model/Configuration'
 
@@ -40,13 +41,15 @@ const useStyles = makeStyles((theme) => ({
  */
 const Homepage: React.FC = () => {
   // Load our actions
-  const { fetchMeetings } = useActions()
+  const { fetchMeetings, getOs, exitApp } = useActions()
 
   // Get our redux state
   const { meetings } = useTypedSelector((state: any) => state.meetings)
+  const { operatingSystem } = useTypedSelector((state: any) => state.operatingSystem)
 
   // Load our meetings from redux when the component is first loaded
   useEffect(() => {
+    getOs()
     fetchMeetings()
   }, [])
 
@@ -75,6 +78,17 @@ const Homepage: React.FC = () => {
 
   // Create our CSS-in-JS classes
   const classes = useStyles()
+  console.log(`OS: ${operatingSystem}`)
+  const isMacOs = (): boolean => {
+    return operatingSystem === 'darwin'
+  }
+
+  const renderExitButton = () => {
+    if (isMacOs()) {
+      return <IconButton onClick={() => exitApp()}><ClearIcon className={classes.icons}/></IconButton>
+    }
+    return <div></div>
+  }
 
   return (
     <div>
@@ -86,6 +100,7 @@ const Homepage: React.FC = () => {
             </Typography>
             <IconButton onClick={() => history.push('/edit')}><AddIcon className={classes.icons}/></IconButton>
             <IconButton><SettingsIcon className={classes.icons}/></IconButton>
+            {renderExitButton()}
           </Toolbar>
         </AppBar>
       </div>

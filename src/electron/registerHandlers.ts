@@ -8,6 +8,7 @@ import onAddMeeting from './handlers/onAddMeeting'
 import onDeleteMeeting from './handlers/onDeleteMeeting'
 import onFetchMeeting from './handlers/onFetchMeeting'
 import onSaveMeeting from './handlers/onSaveMeeting'
+import onExitApp from './handlers/onExitApp'
 
 export default () => {
   ipcMain.on(channels.GET_OS, onGetOs)
@@ -17,4 +18,5 @@ export default () => {
   ipcMain.on(channels.DELETE_MEETING, onDeleteMeeting)
   ipcMain.on(channels.FETCH_MEETING, onFetchMeeting)
   ipcMain.on(channels.SAVE_MEETING, onSaveMeeting)
+  ipcMain.on(channels.EXIT_APP, onExitApp)
 }

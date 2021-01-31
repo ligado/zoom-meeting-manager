@@ -214,7 +214,6 @@
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-erb": "^2.0.0",
-    "eslint-config-erb": "^2.0.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-compat": "^3.8.0",
@@ -253,6 +252,7 @@
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
     "@types/react-redux": "^7.1.16",
+    "@types/url-parse": "^1.4.3",
     "connected-react-router": "^6.8.0",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
@@ -267,7 +267,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.5",
-    "source-map-support": "^0.5.19"
+    "source-map-support": "^0.5.19",
+    "url-parse": "^1.4.7"
   },
   "devEngines": {
     "node": ">=10.x",

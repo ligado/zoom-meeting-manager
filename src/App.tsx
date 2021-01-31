@@ -14,9 +14,9 @@ const currentWindow = remote.getCurrentWindow()
 
 const App = () => {
   // useHistory()
-  return (
-    <Provider store={store}>
-      <Router>
+  const renderTitleBar = () => {
+    if (process.platform !== 'darwin') {
+      return (
         <TitleBar title="Zoom Meeting Manager"
                   iconSrc={icon}
                   currentWindow={currentWindow}
@@ -25,6 +25,22 @@ const App = () => {
                   onMinimize={() => currentWindow.minimize()}
                   onMaximize={() => currentWindow.isMaximized() ? currentWindow.restore() : currentWindow.maximize()}
                   onDoubleClick={() => currentWindow.isMaximized() ? currentWindow.restore() : currentWindow.maximize()}/>
+      )
+    }
+    return <div></div>
+  }
+  return (
+    <Provider store={store}>
+      <Router>
+        {/*<TitleBar title="Zoom Meeting Manager"*/}
+        {/*          iconSrc={icon}*/}
+        {/*          currentWindow={currentWindow}*/}
+        {/*          platform={process.platform as Platform}*/}
+        {/*          onClose={() => currentWindow.close()}*/}
+        {/*          onMinimize={() => currentWindow.minimize()}*/}
+        {/*          onMaximize={() => currentWindow.isMaximized() ? currentWindow.restore() : currentWindow.maximize()}*/}
+        {/*          onDoubleClick={() => currentWindow.isMaximized() ? currentWindow.restore() : currentWindow.maximize()}/>*/}
+        {renderTitleBar()}
         <Switch>
           <Route path="/edit" component={AddEditMeeting}/>
           <Route path="/" component={Homepage}/>

@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, Tray, app } from 'electron'
 
 export enum EventType {
   BLUR, TRAY_CLICK
@@ -12,6 +12,8 @@ interface Event {
 class BrowserWindowService {
   private static instance: BrowserWindowService;
   private browserWindow: BrowserWindow | undefined = undefined
+  private xPosition = 0
+  private tray: Tray | undefined = undefined
   private events: Event[] = []
 
   private constructor() {
@@ -30,6 +32,24 @@ class BrowserWindowService {
 
   public getBrowserWindow(): BrowserWindow | undefined {
     return this.browserWindow
+  }
+
+  public setTray(tray: Tray): void {
+    this.tray = tray
+  }
+
+  public getTray(): Tray | undefined {
+    return this.tray
+  }
+
+  public setXPosition(xPosition: number): void {
+    this.xPosition = xPosition
+  }
+
+  public exitApp(): void {
+    if (this.browserWindow) this.browserWindow.destroy()
+    if (this.tray) this.tray.destroy()
+    app.exit(0)
   }
 
   public event(type: EventType) {
@@ -59,6 +79,13 @@ class BrowserWindowService {
             // Do nothing
             return
           }
+        }
+
+        // Update the xPosition
+        if (this.browserWindow && this.xPosition !== 0) {
+          const bounds = this.browserWindow.getBounds()
+          bounds.x = this.xPosition
+          this.browserWindow.setBounds(bounds)
         }
 
         // Flip the visibility

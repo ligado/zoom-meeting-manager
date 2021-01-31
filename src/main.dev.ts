@@ -11,7 +11,7 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import path from 'path'
-import { app, BrowserWindow, Menu, nativeImage, screen, shell, Tray } from 'electron'
+import { app, BrowserWindow, Menu, nativeImage, screen, shell, Tray, Rectangle, Point } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import registerHandlers from './electron/registerHandlers'
@@ -84,7 +84,7 @@ const createWindow = async () => {
   // Create the browser window, with the position and size based on screen size
   mainWindow = new BrowserWindow({
     show: false,
-    titleBarStyle: 'hidden',
+    // titleBarStyle: 'hidden',
     x: screenBounds.width - appWidth,
     y: 0,
     width: appWidth,
@@ -100,7 +100,6 @@ const createWindow = async () => {
     }
   })
 
-
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
   // @TODO: Use 'ready-to-show' event
@@ -112,8 +111,10 @@ const createWindow = async () => {
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize()
     } else {
-      mainWindow.show()
-      mainWindow.focus()
+      if (process.platform !== 'darwin') {
+        mainWindow.show()
+        mainWindow.focus()
+      }
     }
   })
 
@@ -139,28 +140,39 @@ const createWindow = async () => {
   browserWindowService.setBrowserWindow(mainWindow)
 
   // Create Tray
-  const iconPath = getAssetPath('icon.png')
+  const iconPath = process.platform === 'win32' ? getAssetPath('icon.png') : getAssetPath('icon-24x24.png')
   console.log(`Icon path: ${iconPath}`)
   tray = new Tray(nativeImage.createFromPath(iconPath))
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Show',
-      click: () => {
-        if (mainWindow) {
-          mainWindow.show()
+  browserWindowService.setTray(tray)
+
+  if (process.platform !== 'darwin') {
+    mainWindow.setVisibleOnAllWorkspaces(true)
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Show',
+        click: () => {
+          if (mainWindow) {
+            mainWindow.show()
+          }
+        }
+      },
+      {
+        label: 'Exit',
+        click: () => {
+          if (mainWindow) mainWindow.destroy()
         }
       }
-    },
-    {
-      label: 'Exit',
-      click: () => {
-        if (mainWindow) mainWindow.destroy()
-      }
-    }
-  ])
+    ])
+    tray.setContextMenu(contextMenu)
+  }
   tray.setToolTip('Zoom Meeting Manager')
-  tray.setContextMenu(contextMenu)
-  tray.on('click', () => {
+  tray.on('click', (_: KeyboardEvent, bounds: Rectangle) => {
+    if (process.platform === 'darwin' && mainWindow) {
+      // Update the x-position of the window so it shows up centered underneath the tray icon
+      browserWindowService.setXPosition((bounds.x + bounds.width / 2) - (mainWindow.getBounds().width / 2))
+    }
+
+    // Publis the event to the browser window service
     browserWindowService.event(EventType.TRAY_CLICK)
   })
 
